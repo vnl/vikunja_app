@@ -13,7 +13,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final passwordController = TextEditingController();
-  String _server, _username, _email, _password;
+  String? _server, _username, _email, _password;
   bool _loading = false;
 
   @override
@@ -46,9 +46,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     Padding(
                       padding: vStandardVerticalPadding,
                       child: TextFormField(
-                        onSaved: (username) => _username = username.trim(),
+                        onSaved: (username) => _username = username!.trim(),
                         validator: (username) {
-                          return username.trim().isNotEmpty
+                          return username!.trim().isNotEmpty
                               ? null
                               : 'Please specify a username';
                         },
@@ -77,7 +77,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         controller: passwordController,
                         onSaved: (password) => _password = password,
                         validator: (password) {
-                          return password.length >= 8
+                          return password!.length >= 8
                               ? null
                               : 'Please use at least 8 characters';
                         },
@@ -105,8 +105,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         builder: (context) => FancyButton(
                               onPressed: !_loading
                                   ? () {
-                                      if (_formKey.currentState.validate()) {
-                                        Form.of(context).save();
+                                      if (_formKey.currentState!.validate()) {
+                                        Form.of(context)!.save();
                                         _registerUser(context);
                                       } else {
                                         print("awhat");
@@ -126,11 +126,11 @@ class _RegisterPageState extends State<RegisterPage> {
   _registerUser(BuildContext context) async {
     setState(() => _loading = true);
     try {
-      var vGlobal = VikunjaGlobal.of(context);
+      var vGlobal = VikunjaGlobal.of(context)!;
       var newUserLoggedIn = await vGlobal
           .newUserService(_server)
           .register(_username, _email, _password);
-      vGlobal.changeUser(newUserLoggedIn.user,
+      vGlobal.changeUser(newUserLoggedIn.user!,
           token: newUserLoggedIn.token, base: _server);
     } catch (ex) {
       showDialog(

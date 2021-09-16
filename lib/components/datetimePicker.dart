@@ -5,16 +5,16 @@ import 'package:vikunja_app/theme/constants.dart';
 
 class VikunjaDateTimePicker extends StatelessWidget {
   final String label;
-  final Function onSaved;
-  final Function onChanged;
-  final DateTime initialValue;
+  final Function? onSaved;
+  final Function? onChanged;
+  final DateTime? initialValue;
   final EdgeInsetsGeometry padding;
   final Icon icon;
   final InputBorder border;
 
   const VikunjaDateTimePicker({
-    Key key,
-    @required this.label,
+    Key? key,
+    required this.label,
     this.onSaved,
     this.onChanged,
     this.initialValue,
@@ -37,13 +37,13 @@ class VikunjaDateTimePicker extends StatelessWidget {
         border: border,
         icon: icon,
       ),
-      onSaved: onSaved,
-      onChanged: onChanged,
+      onSaved: onSaved as void Function(DateTime?)?,
+      onChanged: onChanged as void Function(DateTime?)?,
       onShowPicker: (context, currentValue) {
         return showDatePicker(
             context: context,
             firstDate: DateTime(1900),
-            initialDate: currentValue.millisecondsSinceEpoch > 0 ? currentValue : DateTime.now(),
+            initialDate: currentValue!.millisecondsSinceEpoch > 0 ? currentValue : DateTime.now(),
             lastDate: DateTime(2100));
       },
     );

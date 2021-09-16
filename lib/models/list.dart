@@ -3,15 +3,15 @@ import 'package:vikunja_app/models/task.dart';
 import 'package:vikunja_app/models/user.dart';
 
 class TaskList {
-  final int id;
-  final String title, description;
-  final User owner;
-  final DateTime created, updated;
-  final List<Task> tasks;
+  final int? id;
+  final String? title, description;
+  final User? owner;
+  final DateTime? created, updated;
+  final List<Task?>? tasks;
 
   TaskList({
-    @required this.id,
-    @required this.title,
+    required this.id,
+    required this.title,
     this.description,
     this.owner,
     this.created,

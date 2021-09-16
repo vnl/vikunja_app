@@ -4,11 +4,11 @@ import 'package:meta/meta.dart';
 import 'package:vikunja_app/models/user.dart';
 
 class Label {
-  final int id;
-  final String title, description;
-  final DateTime created, updated;
-  final User createdBy;
-  final Color color;
+  final int? id;
+  final String? title, description;
+  final DateTime? created, updated;
+  final User? createdBy;
+  final Color? color;
 
   Label(
       {this.id,

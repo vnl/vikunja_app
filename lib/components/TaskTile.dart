@@ -6,13 +6,13 @@ import 'package:vikunja_app/models/task.dart';
 
 class TaskTile extends StatefulWidget {
   final Task task;
-  final VoidCallback onEdit;
-  final ValueSetter<bool> onMarkedAsDone;
+  final VoidCallback? onEdit;
+  final ValueSetter<bool?>? onMarkedAsDone;
   final bool loading;
 
   const TaskTile(
-      {Key key,
-      @required this.task,
+      {Key? key,
+      required this.task,
       this.onEdit,
       this.loading = false,
       this.onMarkedAsDone})
@@ -46,10 +46,10 @@ class TaskTileState extends State<TaskTile> {
                 strokeWidth: 2.0,
               )),
         ),
-        title: Text(widget.task.title),
-        subtitle: widget.task.description == null || widget.task.description.isEmpty
+        title: Text(widget.task.title!),
+        subtitle: widget.task.description == null || widget.task.description!.isEmpty
             ? null
-            : Text(widget.task.description),
+            : Text(widget.task.description!),
         trailing: IconButton(
           icon: Icon(Icons.settings),
           onPressed: () => widget.onEdit,
@@ -57,12 +57,12 @@ class TaskTileState extends State<TaskTile> {
       );
     }
     return CheckboxListTile(
-      title: Text(widget.task.title),
+      title: Text(widget.task.title!),
       controlAffinity: ListTileControlAffinity.leading,
       value: widget.task.done ?? false,
-      subtitle: widget.task.description == null || widget.task.description.isEmpty
+      subtitle: widget.task.description == null || widget.task.description!.isEmpty
           ? null
-          : Text(widget.task.description),
+          : Text(widget.task.description!),
       secondary: IconButton(
         icon: Icon(Icons.settings),
         onPressed: widget.onEdit,
@@ -84,7 +84,7 @@ class TaskTileState extends State<TaskTile> {
 
   Future<Task> _updateTask(Task task, bool checked) {
     // TODO use copyFrom
-    return VikunjaGlobal.of(context).taskService.update(Task(
+    return VikunjaGlobal.of(context)!.taskService.update(Task(
           id: task.id,
           done: checked,
           title: task.title,

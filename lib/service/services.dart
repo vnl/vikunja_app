@@ -19,30 +19,30 @@ abstract class NamespaceService {
 abstract class ListService {
   Future<List<TaskList>> getAll();
   Future<TaskList> get(int listId);
-  Future<List<TaskList>> getByNamespace(int namespaceId);
-  Future<TaskList> create(int namespaceId, TaskList tl);
+  Future<List<TaskList?>> getByNamespace(int? namespaceId);
+  Future<TaskList> create(int? namespaceId, TaskList tl);
   Future<TaskList> update(TaskList tl);
-  Future delete(int listId);
+  Future delete(int? listId);
 }
 
 abstract class TaskService {
   Future<Task> update(Task task);
   Future delete(int taskId);
-  Future<Task> add(int listId, Task task);
-  Future<Response> getAll(int listId,
-      [Map<String, List<String>> queryParameters]);
+  Future<Task> add(int? listId, Task? task);
+  Future<Response> getAll(int? listId,
+      [Map<String, List<String>>? queryParameters]);
   // TODO: Avoid having to add this to each abstract class
   int get maxPages;
 }
 
 abstract class UserService {
-  Future<UserTokenPair> login(String username, password);
-  Future<UserTokenPair> register(String username, email, password);
+  Future<UserTokenPair> login(String? username, password);
+  Future<UserTokenPair> register(String? username, email, password);
   Future<User> getCurrentUser();
 }
 
 abstract class LabelService {
-  Future<List<Label>> getAll({String query});
+  Future<List<Label>> getAll({String? query});
   Future<Label> get(int labelID);
   Future<Label> create(Label label);
   Future<Label> delete(Label label);
@@ -50,7 +50,7 @@ abstract class LabelService {
 }
 
 abstract class LabelTaskService {
-  Future<List<Label>> getAll(LabelTask lt, {String query});
+  Future<List<Label>> getAll(LabelTask lt, {String? query});
   Future<Label> create(LabelTask lt);
   Future<Label> delete(LabelTask lt);
 }

@@ -2,16 +2,16 @@ import 'package:vikunja_app/models/user.dart';
 import 'package:meta/meta.dart';
 
 class Namespace {
-  final int id;
-  final DateTime created, updated;
-  final String title, description;
-  final User owner;
+  final int? id;
+  final DateTime? created, updated;
+  final String? title, description;
+  final User? owner;
 
   Namespace(
-      {@required this.id,
+      {required this.id,
       this.created,
       this.updated,
-      @required this.title,
+      required this.title,
       this.description,
       this.owner});
 

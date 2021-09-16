@@ -10,9 +10,9 @@ void main() => runApp(VikunjaGlobal(
     login: new VikunjaApp(home: LoginPage())));
 
 class VikunjaApp extends StatefulWidget {
-  final Widget home;
+  final Widget? home;
 
-  VikunjaApp({Key key, this.home}) : super(key: key);
+  VikunjaApp({Key? key, this.home}) : super(key: key);
 
   @override
   _VikunjaAppState createState() => _VikunjaAppState();

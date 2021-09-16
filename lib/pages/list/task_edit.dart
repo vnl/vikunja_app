@@ -10,7 +10,7 @@ import 'package:vikunja_app/theme/buttonText.dart';
 import 'package:vikunja_app/utils/repeat_after_parse.dart';
 
 class TaskEditPage extends StatefulWidget {
-  final Task task;
+  final Task? task;
 
   TaskEditPage({this.task}) : super(key: Key(task.toString()));
 
@@ -22,14 +22,14 @@ class _TaskEditPageState extends State<TaskEditPage> {
   final _formKey = GlobalKey<FormState>();
   bool _loading = false;
 
-  int _priority;
-  DateTime _dueDate, _startDate, _endDate;
-  List<DateTime> _reminderDates;
-  String _title, _description, _repeatAfterType;
-  Duration _repeatAfter;
-  List<Label> _labels;
+  int? _priority;
+  DateTime? _dueDate, _startDate, _endDate;
+  List<DateTime?>? _reminderDates;
+  String? _title, _description, _repeatAfterType;
+  Duration? _repeatAfter;
+  List<Label>? _labels;
   // we use this to find the label object after a user taps on the suggestion, because the typeahead only uses strings, not full objects.
-  List<Label> _suggestedLabels;
+  List<Label>? _suggestedLabels;
   var _reminderInputs = <Widget>[];
   final _labelTypeAheadController = TextEditingController();
 
@@ -37,18 +37,18 @@ class _TaskEditPageState extends State<TaskEditPage> {
   Widget build(BuildContext ctx) {
     // This builds the initial list of reminder inputs only once.
     if (_reminderDates == null) {
-      _reminderDates = widget.task.reminderDates ?? [];
+      _reminderDates = widget.task!.reminderDates ?? [];
 
       _reminderDates?.asMap()?.forEach((i, time) =>
           setState(() => _reminderInputs?.add(VikunjaDateTimePicker(
                 initialValue: time,
                 label: 'Reminder',
-                onSaved: (reminder) => _reminderDates[i] = reminder,
+                onSaved: (reminder) => _reminderDates![i] = reminder,
               ))));
     }
 
     if (_labels == null) {
-      _labels = widget.task.labels ?? [];
+      _labels = widget.task!.labels ?? [];
     }
 
     return Scaffold(
@@ -65,10 +65,10 @@ class _TaskEditPageState extends State<TaskEditPage> {
                 child: TextFormField(
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
-                  initialValue: widget.task.title,
+                  initialValue: widget.task!.title,
                   onSaved: (title) => _title = title,
                   validator: (title) {
-                    if (title.length < 3 || title.length > 250) {
+                    if (title!.length < 3 || title.length > 250) {
                       return 'The title needs to have between 3 and 250 characters.';
                     }
                     return null;
@@ -84,10 +84,10 @@ class _TaskEditPageState extends State<TaskEditPage> {
                 child: TextFormField(
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
-                  initialValue: widget.task.description,
+                  initialValue: widget.task!.description,
                   onSaved: (description) => _description = description,
                   validator: (description) {
-                    if (description.length > 1000) {
+                    if (description!.length > 1000) {
                       return 'The description can have a maximum of 1000 characters.';
                     }
                     return null;
@@ -101,17 +101,17 @@ class _TaskEditPageState extends State<TaskEditPage> {
               VikunjaDateTimePicker(
                 icon: Icon(Icons.access_time),
                 label: 'Due Date',
-                initialValue: widget.task.dueDate,
+                initialValue: widget.task!.dueDate,
                 onSaved: (duedate) => _dueDate = duedate,
               ),
               VikunjaDateTimePicker(
                 label: 'Start Date',
-                initialValue: widget.task.startDate,
+                initialValue: widget.task!.startDate,
                 onSaved: (startDate) => _startDate = startDate,
               ),
               VikunjaDateTimePicker(
                 label: 'End Date',
-                initialValue: widget.task.endDate,
+                initialValue: widget.task!.endDate,
                 onSaved: (endDate) => _endDate = endDate,
               ),
               Row(
@@ -121,7 +121,7 @@ class _TaskEditPageState extends State<TaskEditPage> {
                     child: TextFormField(
                       keyboardType: TextInputType.number,
                       initialValue: getRepeatAfterValueFromDuration(
-                              widget.task.repeatAfter)
+                              widget.task!.repeatAfter)
                           ?.toString(),
                       onSaved: (repeatAfter) => _repeatAfter =
                           getDurationFromType(repeatAfter, _repeatAfterType),
@@ -138,8 +138,8 @@ class _TaskEditPageState extends State<TaskEditPage> {
                       isDense: true,
                       value: _repeatAfterType ??
                           getRepeatAfterTypeFromDuration(
-                              widget.task.repeatAfter),
-                      onChanged: (String newValue) {
+                              widget.task!.repeatAfter),
+                      onChanged: (String? newValue) {
                         setState(() {
                           _repeatAfterType = newValue;
                         });
@@ -186,8 +186,8 @@ class _TaskEditPageState extends State<TaskEditPage> {
                   ),
                   onTap: () {
                     // We add a new entry every time we add a new input, to make sure all inputs have a place where they can put their value.
-                    _reminderDates.add(null);
-                    var currentIndex = _reminderDates.length - 1;
+                    _reminderDates!.add(null);
+                    var currentIndex = _reminderDates!.length - 1;
 
                     // FIXME: Why does putting this into a row fails?
                     setState(() => _reminderInputs.add(Row(
@@ -195,7 +195,7 @@ class _TaskEditPageState extends State<TaskEditPage> {
                             VikunjaDateTimePicker(
                               label: 'Reminder',
                               onSaved: (reminder) =>
-                                  _reminderDates[currentIndex] = reminder,
+                                  _reminderDates![currentIndex] = reminder,
                             ),
                             GestureDetector(
                               onTap: () => print('tapped'),
@@ -215,7 +215,7 @@ class _TaskEditPageState extends State<TaskEditPage> {
                   value: _priorityToString(_priority),
                   isExpanded: true,
                   isDense: true,
-                  onChanged: (String newValue) {
+                  onChanged: (String? newValue) {
                     setState(() {
                       _priority = _priorityFromString(newValue);
                     });
@@ -231,7 +231,7 @@ class _TaskEditPageState extends State<TaskEditPage> {
               ),
               Wrap(
                   spacing: 10,
-                  children: _labels.map((Label label) {
+                  children: _labels!.map((Label label) {
                     return LabelComponent(
                       label: label,
                       onDelete: () {
@@ -251,7 +251,7 @@ class _TaskEditPageState extends State<TaskEditPage> {
                       suggestionsCallback: (pattern) {
                         return _searchLabel(pattern);
                       },
-                      itemBuilder: (context, suggestion) {
+                      itemBuilder: (context, dynamic suggestion) {
                         return ListTile(
                           title: Text(suggestion),
                         );
@@ -259,7 +259,7 @@ class _TaskEditPageState extends State<TaskEditPage> {
                       transitionBuilder: (context, suggestionsBox, controller) {
                         return suggestionsBox;
                       },
-                      onSuggestionSelected: (suggestion) {
+                      onSuggestionSelected: (dynamic suggestion) {
                         _addLabel(suggestion);
                       },
                     ),
@@ -277,8 +277,8 @@ class _TaskEditPageState extends State<TaskEditPage> {
                       child: FancyButton(
                         onPressed: !_loading
                             ? () {
-                                if (_formKey.currentState.validate()) {
-                                  Form.of(context).save();
+                                if (_formKey.currentState!.validate()) {
+                                  Form.of(context)!.save();
                                   _saveTask(context);
                                 }
                               }
@@ -298,15 +298,15 @@ class _TaskEditPageState extends State<TaskEditPage> {
     setState(() => _loading = true);
 
     // Removes all reminders with no value set.
-    _reminderDates.removeWhere((d) => d == null);
+    _reminderDates!.removeWhere((d) => d == null);
 
     Task updatedTask = Task(
-      id: widget.task.id,
+      id: widget.task!.id,
       title: _title,
       description: _description,
-      done: widget.task.done,
+      done: widget.task!.done,
       reminderDates: _reminderDates,
-      createdBy: widget.task.createdBy,
+      createdBy: widget.task!.createdBy,
       dueDate: _dueDate,
       startDate: _startDate,
       endDate: _endDate,
@@ -315,7 +315,7 @@ class _TaskEditPageState extends State<TaskEditPage> {
     );
 
     // update the labels
-    VikunjaGlobal.of(context)
+    VikunjaGlobal.of(context)!
         .labelTaskBulkService
         .update(updatedTask, _labels)
         .catchError((err) {
@@ -327,7 +327,7 @@ class _TaskEditPageState extends State<TaskEditPage> {
       );
     });
 
-    VikunjaGlobal.of(context).taskService.update(updatedTask).then((_) {
+    VikunjaGlobal.of(context)!.taskService.update(updatedTask).then((_) {
       setState(() => _loading = false);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('The task was updated successfully!'),
@@ -347,17 +347,17 @@ class _TaskEditPageState extends State<TaskEditPage> {
 
   _removeLabel(Label label) {
     setState(() {
-      _labels.removeWhere((l) => l.id == label.id);
+      _labels!.removeWhere((l) => l.id == label.id);
     });
   }
 
   _searchLabel(String query) {
-    return VikunjaGlobal.of(context)
+    return VikunjaGlobal.of(context)!
         .labelService
         .getAll(query: query)
         .then((labels) {
       // Only show those labels which aren't already added to the task
-      labels.removeWhere((labelToRemove) => _labels.contains(labelToRemove));
+      labels.removeWhere((labelToRemove) => _labels!.contains(labelToRemove));
       _suggestedLabels = labels;
       return labels.map((label) => label.title).toList();
     });
@@ -366,9 +366,9 @@ class _TaskEditPageState extends State<TaskEditPage> {
   _addLabel(String labelTitle) {
     // FIXME: This is not an optimal solution...
     bool found = false;
-    _suggestedLabels.forEach((label) {
+    _suggestedLabels!.forEach((label) {
       if (label.title == labelTitle) {
-        _labels.add(label);
+        _labels!.add(label);
         found = true;
       }
     });
@@ -385,19 +385,19 @@ class _TaskEditPageState extends State<TaskEditPage> {
     }
 
     Label newLabel = Label(title: labelTitle);
-    VikunjaGlobal.of(context)
+    VikunjaGlobal.of(context)!
         .labelService
         .create(newLabel)
         .then((createdLabel) {
       setState(() {
-        _labels.add(createdLabel);
+        _labels!.add(createdLabel);
         _labelTypeAheadController.clear();
       });
     });
   }
 
   // FIXME: Move the following two functions to an extra class or type.
-  _priorityFromString(String priority) {
+  _priorityFromString(String? priority) {
     switch (priority) {
       case 'Low':
         return 1;
@@ -415,7 +415,7 @@ class _TaskEditPageState extends State<TaskEditPage> {
     }
   }
 
-  _priorityToString(int priority) {
+  _priorityToString(int? priority) {
     switch (priority) {
       case 0:
         return 'Unset';

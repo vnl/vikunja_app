@@ -84,12 +84,12 @@ class MockedNamespaceService implements NamespaceService {
 class MockedListService implements ListService {
   @override
   Future<TaskList> create(namespaceId, TaskList tl) {
-    _nsLists[namespaceId].add(tl.id);
+    _nsLists[namespaceId!]!.add(tl.id);
     return Future.value(_lists[tl.id] = tl);
   }
 
   @override
-  Future delete(int listId) {
+  Future delete(int? listId) {
     _lists.remove(listId);
     return Future.value();
   }
@@ -105,9 +105,9 @@ class MockedListService implements ListService {
   }
 
   @override
-  Future<List<TaskList>> getByNamespace(int namespaceId) {
+  Future<List<TaskList?>> getByNamespace(int? namespaceId) {
     return Future.value(
-        _nsLists[namespaceId].map((listId) => _lists[listId]).toList());
+        _nsLists[namespaceId!]!.map((listId) => _lists[listId]).toList());
   }
 
   @override
@@ -122,7 +122,7 @@ class MockedTaskService implements TaskService {
   @override
   Future delete(int taskId) {
     _lists.forEach(
-        (_, list) => list.tasks.removeWhere((task) => task.id == taskId)
+        (_, list) => list.tasks!.removeWhere((task) => task!.id == taskId)
     );
     _tasks.remove(taskId);
     return Future.value();
@@ -131,25 +131,25 @@ class MockedTaskService implements TaskService {
   @override
   Future<Task> update(Task task) {
     _lists.forEach((_, list) {
-      if (list.tasks.where((t) => t.id == task.id).length > 0) {
-        list.tasks.removeWhere((t) => t.id == task.id);
-        list.tasks.add(task);
+      if (list.tasks!.where((t) => t!.id == task.id).length > 0) {
+        list.tasks!.removeWhere((t) => t!.id == task.id);
+        list.tasks!.add(task);
       }
     });
     return Future.value(_tasks[task.id] = task);
   }
 
   @override
-  Future<Task> add(int listId, Task task) {
-    var id = _tasks.keys.last + 1;
+  Future<Task> add(int? listId, Task? task) {
+    var id = _tasks.keys.last! + 1;
     _tasks[id] = task;
-    _lists[listId].tasks.add(task);
+    _lists[listId]!.tasks!.add(task);
     return Future.value(task);
   }
 
   @override
-  Future<Response> getAll(int listId,
-      [Map<String, List<String>> queryParameters]) {
+  Future<Response> getAll(int? listId,
+      [Map<String, List<String>>? queryParameters]) {
     return Future.value(new Response(_tasks.values.toList(), 200, {}));
   }
 
@@ -159,12 +159,12 @@ class MockedTaskService implements TaskService {
 
 class MockedUserService implements UserService {
   @override
-  Future<UserTokenPair> login(String username, password) {
+  Future<UserTokenPair> login(String? username, password) {
     return Future.value(UserTokenPair(_users[1], 'abcdefg'));
   }
 
   @override
-  Future<UserTokenPair> register(String username, email, password) {
+  Future<UserTokenPair> register(String? username, email, password) {
     return Future.value(UserTokenPair(_users[1], 'abcdefg'));
   }
 

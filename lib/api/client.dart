@@ -7,7 +7,7 @@ import 'package:vikunja_app/components/string_extension.dart';
 class Client {
   final JsonDecoder _decoder = new JsonDecoder();
   final JsonEncoder _encoder = new JsonEncoder();
-  final String _token;
+  final String? _token;
   final String _base;
 
   String get base => _base;
@@ -28,7 +28,7 @@ class Client {
       };
 
   Future<Response> get(String url,
-      [Map<String, List<String>> queryParameters]) {
+      [Map<String, List<String>>? queryParameters]) {
     // TODO: This could be moved to a seperate function
     var uri = Uri.parse('${this.base}$url');
     // Because these are all final values, we can't just add the queryParameters and must instead build a new Uri Object every time this method is called.
@@ -47,20 +47,20 @@ class Client {
   }
 
   Future<Response> delete(String url) {
-    return http.delete('${this.base}$url'.toUri(),
+    return http.delete('${this.base}$url'.toUri()!,
         headers: _headers,
     ).then(_handleResponse);
   }
 
   Future<Response> post(String url, {dynamic body}) {
-    return http.post('${this.base}$url'.toUri(),
+    return http.post('${this.base}$url'.toUri()!,
         headers: _headers,
         body: _encoder.convert(body),
     ).then(_handleResponse);
   }
 
   Future<Response> put(String url, {dynamic body}) {
-    return http.put('${this.base}$url'.toUri(),
+    return http.put('${this.base}$url'.toUri()!,
         headers: _headers,
         body: _encoder.convert(body),
     ).then(_handleResponse);
@@ -74,11 +74,11 @@ class Client {
         Map<String, dynamic> error = _decoder.convert(response.body);
         throw new InvalidRequestApiException(
             response.statusCode,
-            response.request.url.toString(),
+            response.request!.url.toString(),
             error["message"] ?? "Unknown Error");
       }
       throw new ApiException(
-          response.statusCode, response.request.url.toString());
+          response.statusCode, response.request!.url.toString());
     }
     return Response(
         _decoder.convert(response.body),

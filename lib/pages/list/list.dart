@@ -15,14 +15,14 @@ import 'package:vikunja_app/stores/list_store.dart';
 class ListPage extends StatefulWidget {
   final TaskList taskList;
 
-  ListPage({this.taskList}) : super(key: Key(taskList.id.toString()));
+  ListPage({required this.taskList}) : super(key: Key(taskList.id.toString()));
 
   @override
   _ListPageState createState() => _ListPageState();
 }
 
 class _ListPageState extends State<ListPage> {
-  TaskList _list;
+  TaskList? _list;
   List<Task> _loadingTasks = [];
   int _currentPage = 1;
 
@@ -42,7 +42,7 @@ class _ListPageState extends State<ListPage> {
     final taskState = Provider.of<ListProvider>(context);
     return Scaffold(
         appBar: AppBar(
-          title: Text(_list.title),
+          title: Text(_list!.title!),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.edit),
@@ -145,7 +145,7 @@ class _ListPageState extends State<ListPage> {
   void _loadTasksForPage(int page) {
     Provider.of<ListProvider>(context, listen: false).loadTasks(
       context: context,
-      listId: _list.id,
+      listId: _list!.id,
       page: page,
     );
   }
@@ -164,7 +164,7 @@ class _ListPageState extends State<ListPage> {
   }
 
   _addItem(String title, BuildContext context) {
-    var globalState = VikunjaGlobal.of(context);
+    var globalState = VikunjaGlobal.of(context)!;
     var newTask = Task(
       id: null,
       title: title,
@@ -176,7 +176,7 @@ class _ListPageState extends State<ListPage> {
         .addTask(
           context: context,
           newTask: newTask,
-          listId: _list.id,
+          listId: _list!.id,
     ).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('The task was added successfully!'),

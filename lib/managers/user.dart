@@ -12,7 +12,7 @@ class UserManager {
       userMap.keys
           .where((id) => _isNumeric(id))
           .map((idString) => int.tryParse(idString));
-    });
+    } as FutureOr<List<int>> Function(Map<String, String>));
   }
 
   bool _isNumeric(String str) {

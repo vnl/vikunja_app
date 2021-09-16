@@ -7,11 +7,11 @@ import 'package:vikunja_app/service/services.dart';
 
 class LabelTaskBulkAPIService extends APIService
     implements LabelTaskBulkService {
-  LabelTaskBulkAPIService(Client client) : super(client);
+  LabelTaskBulkAPIService(Client? client) : super(client);
 
   @override
-  Future<List<Label>> update(Task task, List<Label> labels) {
-    return client
+  Future<List<Label>> update(Task task, List<Label>? labels) {
+    return client!
         .post('/tasks/${task.id}/labels/bulk',
             body: LabelTaskBulk(labels: labels).toJSON())
         .then((response) =>

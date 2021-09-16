@@ -20,18 +20,18 @@ class ListProvider with ChangeNotifier {
 
   List<Task> get tasks => _tasks;
 
-  void loadTasks({BuildContext context, int listId, int page = 1}) {
+  void loadTasks({required BuildContext context, int? listId, int page = 1}) {
     _tasks = [];
     _isLoading = true;
     notifyListeners();
 
-    VikunjaGlobal.of(context).taskService.getAll(listId, {
+    VikunjaGlobal.of(context)!.taskService.getAll(listId, {
       "sort_by": ["done", "id"],
       "order_by": ["asc", "desc"],
       "page": [page.toString()]
     }).then((response) {
       if (response.headers["x-pagination-total-pages"] != null) {
-        _maxPages = int.parse(response.headers["x-pagination-total-pages"]);
+        _maxPages = int.parse(response.headers["x-pagination-total-pages"]!);
       }
       _tasks.addAll(response.body);
       _isLoading = false;
@@ -39,8 +39,8 @@ class ListProvider with ChangeNotifier {
     });
   }
 
-  Future<void> addTaskByTitle({BuildContext context, String title, int listId}) {
-    var globalState = VikunjaGlobal.of(context);
+  Future<void> addTaskByTitle({required BuildContext context, String? title, int? listId}) {
+    var globalState = VikunjaGlobal.of(context)!;
     var newTask = Task(
         id: null,
         title: title,
@@ -57,8 +57,8 @@ class ListProvider with ChangeNotifier {
     });
   }
 
-  Future<void> addTask({BuildContext context, Task newTask, int listId}) {
-    var globalState = VikunjaGlobal.of(context);
+  Future<void> addTask({required BuildContext context, Task? newTask, int? listId}) {
+    var globalState = VikunjaGlobal.of(context)!;
     _isLoading = true;
     notifyListeners();
 
@@ -69,8 +69,8 @@ class ListProvider with ChangeNotifier {
     });
   }
 
-  Future<void> updateTask({BuildContext context, int id, bool done}) {
-    var globalState = VikunjaGlobal.of(context);
+  Future<void> updateTask({required BuildContext context, int? id, bool? done}) {
+    var globalState = VikunjaGlobal.of(context)!;
     globalState.taskService.update(Task(
       id: id,
       done: done,
