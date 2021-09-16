@@ -1,0 +1,189 @@
+kind: pipeline
+type: docker
+name: testing
+
+workspace:
+  base: /home/cirrus/app
+
+clone:
+  depth: 50
+
+# Only run on prs or pushes to master
+trigger:
+  branch:
+    include:
+      - master
+  event:
+    include:
+      - push
+      - pull_request
+
+steps:
+  - name: build
+    image: cirrusci/flutter:stable
+    pull: true
+    commands:
+      - flutter packages get
+      - make format-check
+      - make build-debug
+
+# Don't run tests until we have to not break the pipeline
+#  - name: test
+#    image: cirrusci/flutter:stable
+#    pull: true
+#    commands:
+#      - flutter packages get
+#      - make test
+
+---
+kind: pipeline
+type: docker
+name: release-latest
+
+depends_on:
+  - testing
+
+trigger:
+  branch:
+    - master
+  event:
+    - push
+
+workspace:
+  base: /home/cirrus/app
+
+clone:
+  depth: 50
+
+steps:
+  # Because drone separates the pipelines, we have to add the build step to this pipeline. This is double code, we should change it at some point if possible.
+  - name: build
+    image: cirrusci/flutter:stable
+    pull: true
+    commands:
+      - flutter packages get
+      - make build-all
+      - mkdir apks
+      - mv build/app/outputs/apk/*/*/*.apk apks
+
+    # Push the releases to our pseudo-s3-bucket
+  - name: release
+    image: plugins/s3:1
+    pull: true
+    settings:
+      bucket: vikunja-releases
+      access_key:
+        from_secret: aws_access_key_id
+      secret_key:
+        from_secret: aws_secret_access_key
+      endpoint: https://s3.fr-par.scw.cloud
+      region: fr-par
+      path_style: true
+      strip_prefix: apks/
+      source: apks/*
+      target: /app/master
+
+---
+kind: pipeline
+type: docker
+name: release-version
+
+depends_on:
+  - testing
+
+trigger:
+  event:
+    - tag
+
+workspace:
+  base: /home/cirrus/app
+
+clone:
+  depth: 50
+
+steps:
+  # Because drone separates the pipelines, we have to add the build step to this pipeline. This is double code, we should change it at some point if possible.
+  - name: build
+    image: cirrusci/flutter:stable
+    pull: true
+    commands:
+      - flutter packages get
+      - make build-all
+      - mkdir apks
+      - mv build/app/outputs/apk/*/*/*.apk apks
+    # Push the releases to our pseudo-s3-bucket
+  - name: release
+    image: plugins/s3:1
+    pull: true
+    settings:
+      bucket: vikunja-releases
+      access_key:
+        from_secret: aws_access_key_id
+      secret_key:
+        from_secret: aws_secret_access_key
+      endpoint: https://s3.fr-par.scw.cloud
+      region: fr-par
+      path_style: true
+      strip_prefix: apks/
+      source: apks/*
+      target: /app/${DRONE_TAG##v}
+
+---
+kind: pipeline
+type: exec
+name: release-ios
+
+
+trigger:
+  event:
+    - push
+  branch:
+    - master
+
+platform:
+  os: darwin
+  arch: amd64
+
+
+steps:
+  - name: build
+    commands:
+      - make build-ios
+    environment:
+      HOME: /Users/buildslave
+  - name: deploy
+    environment:
+      HOME: /Users/buildslave
+      LC_ALL: en_US.UTF-8
+      LANG: en_US.UTF-8
+      FASTLANE_SKIP_UPDATE_CHECK: true
+      FASTLANE_HIDE_CHANGELOG: true
+      MATCH_PASSWORD:
+        from_secret: match_password
+      FASTLANE_PASSWORD:
+        from_secret: fastlane_password
+      FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD:
+        from_secret: fastlane_apple_password
+      FASTLANE_SESSION:
+        from_secret: fastlane_session
+      KEYCHAIN_PASSWORD:
+        from_secret: keychain_password
+      CONTACT_EMAIL:
+        from_secret: contact_email
+      CONTACT_FIRST_NAME:
+        from_secret: contact_first_name
+      CONTACT_LAST_NAME:
+        from_secret: contact_last_name
+      CONTACT_PHONE:
+        from_secret: contact_phone
+    commands:
+      - eval "$(rbenv init -)"
+      - rbenv shell 2.5.0
+      - cd ios
+      - bundle config set --local path '.vendor/bundle'
+      - bundle install
+      - bundle exec fastlane ios signing
+      - bundle exec fastlane ios beta
+
+depends_on:
+  - testing

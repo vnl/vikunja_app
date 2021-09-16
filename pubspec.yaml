@@ -1,0 +1,40 @@
+name: vikunja_app
+description: Vikunja as Flutter cross platform app
+
+version: 0.1.0
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  after_layout: ^1.1.0
+  cupertino_icons: ^1.0.3
+  flutter:
+    sdk: flutter
+  flutter_secure_storage: ^4.2.1
+  http: ^0.13.3
+
+dev_dependencies:
+  flutter_launcher_icons: ^0.9.2
+  flutter_test:
+    sdk: flutter
+
+flutter_icons:
+  image_path: "assets/vikunja_logo.png"
+  image_path_ios: "assets/vikunja_ios.png"
+  android: true
+  ios: true
+  adaptive_icon_background: "#FF455486"
+  adaptive_icon_foreground: "assets/vikunja_logo_adaptive.png"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/graphics/hypnotize.png
+    - assets/vikunja_logo.png
+    - assets/vikunja_logo_full.png
+    - assets/vikunja_logo_full_white.png
+  fonts:
+    - family: Quicksand
+      fonts:
+        - asset: assets/fonts/quicksand-v7-latin-regular.ttf

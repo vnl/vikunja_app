@@ -1,0 +1,45 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Push a new beta build to TestFlight"
+  lane :beta do
+    match(type: "appstore", readonly: true)
+    gym
+    upload_to_testflight(
+        beta_app_feedback_email: "hello@vikunja.io",
+        beta_app_description: "Automated Vikunja App Build",
+        demo_account_required: true,
+        distribute_external: true,
+        groups: ["PublicBeta"],
+        changelog: "Automated Vikunja Build",
+        beta_app_review_info: {
+            contact_email: ENV["CONTACT_EMAIL"],
+            contact_first_name: ENV["CONTACT_FIRST_NAME"],
+            contact_last_name: ENV["CONTACT_LAST_NAME"],
+            contact_phone: ENV["CONTACT_PHONE"],
+            demo_account_name: "demo",
+            demo_account_password: "demo",
+            notes: "Please use https://try.vikunja.io as URL"
+        }
+    )
+  end
+  lane :signing do
+    match(type: "appstore", readonly: true)
+    match(type: "development", readonly: true)
+  end
+end
