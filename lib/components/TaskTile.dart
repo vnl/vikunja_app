@@ -6,11 +6,16 @@ import 'package:vikunja_app/models/task.dart';
 
 class TaskTile extends StatefulWidget {
   final Task task;
-  final VoidCallback? onEdit;
+  final VoidCallback onEdit;
+  final ValueSetter<bool> onMarkedAsDone;
   final bool loading;
 
   const TaskTile(
-      {Key? key, required this.task, this.onEdit, this.loading = false})
+      {Key key,
+      @required this.task,
+      this.onEdit,
+      this.loading = false,
+      this.onMarkedAsDone})
       : assert(task != null),
         super(key: key);
 
@@ -41,51 +46,50 @@ class TaskTileState extends State<TaskTile> {
                 strokeWidth: 2.0,
               )),
         ),
-        title: Text(_currentTask.title!),
-        subtitle:
-            _currentTask.description == null || _currentTask.description!.isEmpty
-                ? null
-                : Text(_currentTask.description!),
+        title: Text(widget.task.title),
+        subtitle: widget.task.description == null || widget.task.description.isEmpty
+            ? null
+            : Text(widget.task.description),
         trailing: IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              null; // TODO: implement edit task
-            }),
+          icon: Icon(Icons.settings),
+          onPressed: () => widget.onEdit,
+        ),
       );
     }
     return CheckboxListTile(
-      title: Text(_currentTask.title!),
+      title: Text(widget.task.title),
       controlAffinity: ListTileControlAffinity.leading,
-      value: _currentTask.done ?? false,
-      subtitle:
-          _currentTask.description == null || _currentTask.description!.isEmpty
-              ? null
-              : Text(_currentTask.description!),
-      secondary:
-          IconButton(icon: Icon(Icons.settings), onPressed: widget.onEdit),
-      onChanged: _change,
+      value: widget.task.done ?? false,
+      subtitle: widget.task.description == null || widget.task.description.isEmpty
+          ? null
+          : Text(widget.task.description),
+      secondary: IconButton(
+        icon: Icon(Icons.settings),
+        onPressed: widget.onEdit,
+      ),
+      onChanged: widget.onMarkedAsDone,
     );
   }
 
-  void _change(bool? value) async {
+  void _change(bool value) async {
     setState(() {
       this._loading = true;
     });
-    Task newTask = await _updateTask(_currentTask, value);
+    Task newTask = await _updateTask(widget.task, value);
     setState(() {
-      this._currentTask = newTask;
+      //this.widget.task = newTask;
       this._loading = false;
     });
   }
 
-  Future<Task> _updateTask(Task task, bool? checked) {
+  Future<Task> _updateTask(Task task, bool checked) {
     // TODO use copyFrom
-    return VikunjaGlobal.of(context)!.taskService.update(Task(
+    return VikunjaGlobal.of(context).taskService.update(Task(
           id: task.id,
           done: checked,
           title: task.title,
           description: task.description,
-          owner: null,
+          createdBy: null,
         ));
   }
 }

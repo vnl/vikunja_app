@@ -2,10 +2,10 @@ import 'package:vikunja_app/api/client.dart';
 import 'package:meta/meta.dart';
 
 class APIService {
-  final Client? _client;
+  final Client _client;
 
   @protected
-  Client? get client => _client;
+  Client get client => _client;
 
   APIService(this._client);
 

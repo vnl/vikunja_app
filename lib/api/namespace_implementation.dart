@@ -6,37 +6,37 @@ import 'package:vikunja_app/models/namespace.dart';
 import 'package:vikunja_app/service/services.dart';
 
 class NamespaceAPIService extends APIService implements NamespaceService {
-  NamespaceAPIService(Client? client) : super(client);
+  NamespaceAPIService(Client client) : super(client);
 
   @override
   Future<Namespace> create(Namespace ns) {
-    return client!
+    return client
         .put('/namespaces', body: ns.toJSON())
-        .then((map) => Namespace.fromJson(map));
+        .then((response) => Namespace.fromJson(response.body));
   }
 
   @override
   Future delete(int namespaceId) {
-    return client!.delete('/namespaces/$namespaceId');
+    return client.delete('/namespaces/$namespaceId');
   }
 
   @override
   Future<Namespace> get(int namespaceId) {
-    return client!
+    return client
         .get('/namespaces/$namespaceId')
-        .then((map) => Namespace.fromJson(map));
+        .then((response) => Namespace.fromJson(response.body));
   }
 
   @override
   Future<List<Namespace>> getAll() {
-    return client!.get('/namespaces').then(
-        (list) => convertList(list, (result) => Namespace.fromJson(result)));
+    return client.get('/namespaces').then((response) =>
+        convertList(response.body, (result) => Namespace.fromJson(result)));
   }
 
   @override
   Future<Namespace> update(Namespace ns) {
-    return client!
+    return client
         .post('/namespaces/${ns.id}', body: ns.toJSON())
-        .then((map) => Namespace.fromJson(map));
+        .then((response) => Namespace.fromJson(response.body));
   }
 }

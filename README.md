@@ -1,8 +1,15 @@
-# Vikunja Cross-Plattform app
+# Vikunja Mobile App
 
-[![Build Status](https://drone.kolaente.de/api/badges/vikunja/app/status.svg)](https://drone.kolaente.de/vikunja/app)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Download](https://img.shields.io/badge/download-v0.1-brightgreen.svg)](https://storage.kolaente.de/minio/vikunja-app/)
-[![TestFlight Beta](https://img.shields.io/badge/TestFlight-Beta-026CBB)](https://testflight.apple.com/join/KxOaAraq)
 
-Vikunja as Flutter cross platform app.
+Vikunja (/vɪˈkuːnjə/)
+
+The to-do app to organize your life.
+
+Also one of the two wild South American camelids which live in the high
+alpine areas of the Andes and a [relative of the llama](https://en.wikipedia.org/wiki/Vicu%C3%B1a).
+
+Vikunja is an Open-Source, [self-hosted](https://vikunja.io/docs/installing/) To-Do list application for all platforms. It is licensed under the [AGPLv3](https://code.vikunja.io/api/src/branch/main/LICENSE).
+
+

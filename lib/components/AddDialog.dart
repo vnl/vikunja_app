@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AddDialog extends StatelessWidget {
-  final ValueChanged<String>? onAdd;
-  final InputDecoration? decoration;
+  final ValueChanged<String> onAdd;
+  final InputDecoration decoration;
 
-  const AddDialog({Key? key, this.onAdd, this.decoration}) : super(key: key);
+  const AddDialog({Key key, this.onAdd, this.decoration}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class AddDialog extends StatelessWidget {
           child: const Text('ADD'),
           onPressed: () {
             if (this.onAdd != null && textController.text.isNotEmpty)
-              this.onAdd!(textController.text);
+              this.onAdd(textController.text);
             Navigator.pop(context);
           },
         )

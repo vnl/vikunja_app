@@ -75,3 +75,4 @@ ios/fastlane/README.md
 ios/fastlane/report.xml
 ios/Runner.ipa
 ios/Runner.app.dSYM.zip
+ios/Flutter/flutter_export_environment.sh

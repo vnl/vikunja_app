@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:vikunja_app/api/client.dart';
+import 'package:vikunja_app/api/label_task.dart';
+import 'package:vikunja_app/api/label_task_bulk.dart';
+import 'package:vikunja_app/api/labels.dart';
 import 'package:vikunja_app/api/list_implementation.dart';
 import 'package:vikunja_app/api/namespace_implementation.dart';
 import 'package:vikunja_app/api/task_implementation.dart';
@@ -10,17 +13,16 @@ import 'package:vikunja_app/models/user.dart';
 import 'package:vikunja_app/service/services.dart';
 
 class VikunjaGlobal extends StatefulWidget {
-  final Widget? child;
-  final Widget? login;
+  final Widget child;
+  final Widget login;
 
   VikunjaGlobal({this.child, this.login});
 
   @override
   VikunjaGlobalState createState() => VikunjaGlobalState();
 
-  static VikunjaGlobalState? of(BuildContext context) {
-    var widget =
-        context.dependOnInheritedWidgetOfExactType<_VikunjaGlobalInherited>()!;
+  static VikunjaGlobalState of(BuildContext context) {
+    var widget = context.dependOnInheritedWidgetOfExactType<_VikunjaGlobalInherited>();
     return widget.data;
   }
 }
@@ -28,13 +30,13 @@ class VikunjaGlobal extends StatefulWidget {
 class VikunjaGlobalState extends State<VikunjaGlobal> {
   final FlutterSecureStorage _storage = new FlutterSecureStorage();
 
-  User? _currentUser;
-  Client? _client;
+  User _currentUser;
+  Client _client;
   bool _loading = true;
 
-  User? get currentUser => _currentUser;
+  User get currentUser => _currentUser;
 
-  Client? get client => _client;
+  Client get client => _client;
 
   UserManager get userManager => new UserManager(_storage);
 
@@ -46,13 +48,20 @@ class VikunjaGlobalState extends State<VikunjaGlobal> {
 
   ListService get listService => new ListAPIService(client);
 
+  LabelService get labelService => new LabelAPIService(client);
+
+  LabelTaskService get labelTaskService => new LabelTaskAPIService(client);
+
+  LabelTaskBulkAPIService get labelTaskBulkService =>
+      new LabelTaskBulkAPIService(client);
+
   @override
   void initState() {
     super.initState();
     _loadCurrentUser();
   }
 
-  void changeUser(User newUser, {String? token, String? base}) async {
+  void changeUser(User newUser, {String token, String base}) async {
     setState(() {
       _loading = true;
     });
@@ -72,7 +81,7 @@ class VikunjaGlobalState extends State<VikunjaGlobal> {
     await _storage.write(key: 'currentUser', value: newUser.id.toString());
     setState(() {
       _currentUser = newUser;
-      _client = Client(token, base!);
+      _client = Client(token, base);
       _loading = false;
     });
   }
@@ -85,7 +94,7 @@ class VikunjaGlobalState extends State<VikunjaGlobal> {
         _currentUser = null;
       });
     }).catchError((err) {
-      Scaffold.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('An error occured while logging out!'),
       ));
     });
@@ -138,21 +147,21 @@ class VikunjaGlobalState extends State<VikunjaGlobal> {
     }
     return new _VikunjaGlobalInherited(
       data: this,
-      child: client == null ? widget.login! : widget.child!,
+      child: client == null ? widget.login : widget.child,
     );
   }
 }
 
 class _VikunjaGlobalInherited extends InheritedWidget {
-  final VikunjaGlobalState? data;
+  final VikunjaGlobalState data;
 
-  _VikunjaGlobalInherited({Key? key, this.data, required Widget child})
+  _VikunjaGlobalInherited({Key key, this.data, Widget child})
       : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(_VikunjaGlobalInherited oldWidget) {
-    return (data!.currentUser != null &&
-            data!.currentUser!.id != oldWidget.data!.currentUser!.id) ||
-        data!.client != oldWidget.data!.client;
+    return (data.currentUser != null &&
+            data.currentUser.id != oldWidget.data.currentUser.id) ||
+        data.client != oldWidget.data.client;
   }
 }
