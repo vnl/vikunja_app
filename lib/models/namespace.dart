@@ -1,5 +1,4 @@
 import 'package:vikunja_app/models/user.dart';
-import 'package:meta/meta.dart';
 
 class Namespace {
   final int? id;
