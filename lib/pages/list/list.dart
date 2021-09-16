@@ -123,6 +123,6 @@ class _ListPageState extends State<ListPage> {
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text('The task was added successfully!'),
       ));
-    } as FutureOr<_> Function(Null));
+    });
   }
 }
