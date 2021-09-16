@@ -9,9 +9,9 @@ void main() => runApp(VikunjaGlobal(
     login: new VikunjaApp(home: LoginPage())));
 
 class VikunjaApp extends StatelessWidget {
-  final Widget home;
+  final Widget? home;
 
-  const VikunjaApp({Key? key, required this.home}) : super(key: key);
+  const VikunjaApp({Key? key, this.home}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(

@@ -3,15 +3,15 @@ import 'package:vikunja_app/models/task.dart';
 import 'package:vikunja_app/models/user.dart';
 
 class TaskList {
-  final int id;
-  final String title, description;
-  final User owner;
-  final DateTime created, updated;
-  final List<Task> tasks;
+  final int? id;
+  final String? title, description;
+  final User? owner;
+  final DateTime? created, updated;
+  final List<Task>? tasks;
 
   TaskList(
-      {@required this.id,
-      @required this.title,
+      {required this.id,
+      required this.title,
       this.description,
       this.owner,
       this.created,
@@ -25,7 +25,7 @@ class TaskList {
         title = json['title'],
         updated = DateTime.parse(json['updated']),
         created = DateTime.parse(json['created']),
-        tasks = (json['tasks'] == null ? [] : json['tasks'] as List<dynamic>)
+        tasks = (json['tasks'] == null ? [] : json['tasks'] as List<dynamic>?)
             ?.map((taskJson) => Task.fromJson(taskJson))
             ?.toList();
 

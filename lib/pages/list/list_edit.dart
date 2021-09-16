@@ -5,7 +5,7 @@ import 'package:vikunja_app/theme/button.dart';
 import 'package:vikunja_app/theme/buttonText.dart';
 
 class ListEditPage extends StatefulWidget {
-  final TaskList list;
+  final TaskList? list;
 
   ListEditPage({this.list}) : super(key: Key(list.toString()));
 
@@ -16,7 +16,7 @@ class ListEditPage extends StatefulWidget {
 class _ListEditPageState extends State<ListEditPage> {
   final _formKey = GlobalKey<FormState>();
   bool _loading = false;
-  String _title, _description;
+  String? _title, _description;
 
   @override
   Widget build(BuildContext ctx) {
@@ -36,10 +36,10 @@ class _ListEditPageState extends State<ListEditPage> {
                     child: TextFormField(
                       maxLines: null,
                       keyboardType: TextInputType.multiline,
-                      initialValue: widget.list.title,
+                      initialValue: widget.list!.title,
                       onSaved: (title) => _title = title,
                       validator: (title) {
-                        if (title.length < 3 || title.length > 250) {
+                        if (title!.length < 3 || title.length > 250) {
                           return 'The title needs to have between 3 and 250 characters.';
                         }
                         return null;
@@ -55,10 +55,10 @@ class _ListEditPageState extends State<ListEditPage> {
                     child: TextFormField(
                       maxLines: null,
                       keyboardType: TextInputType.multiline,
-                      initialValue: widget.list.description,
+                      initialValue: widget.list!.description,
                       onSaved: (description) => _description = description,
                       validator: (description) {
-                        if (description.length > 1000) {
+                        if (description!.length > 1000) {
                           return 'The description can have a maximum of 1000 characters.';
                         }
                         return null;
@@ -75,8 +75,8 @@ class _ListEditPageState extends State<ListEditPage> {
                           child: FancyButton(
                             onPressed: !_loading
                                 ? () {
-                                    if (_formKey.currentState.validate()) {
-                                      Form.of(context).save();
+                                    if (_formKey.currentState!.validate()) {
+                                      Form.of(context)!.save();
                                       _saveList(context);
                                     }
                                   }
@@ -97,9 +97,9 @@ class _ListEditPageState extends State<ListEditPage> {
     // FIXME: is there a way we can update the list without creating a new list object?
     //  aka updating the existing list we got from context (setters?)
     TaskList updatedList =
-        TaskList(id: widget.list.id, title: _title, description: _description);
+        TaskList(id: widget.list!.id, title: _title, description: _description);
 
-    VikunjaGlobal.of(context).listService.update(updatedList).then((_) {
+    VikunjaGlobal.of(context)!.listService.update(updatedList).then((_) {
       setState(() => _loading = false);
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text('The list was updated successfully!'),

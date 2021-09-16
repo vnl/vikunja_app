@@ -19,7 +19,7 @@ ThemeData _buildVikunjaTheme(ThemeData base) {
     buttonTheme: base.buttonTheme.copyWith(
       buttonColor: vPrimary,
       textTheme: ButtonTextTheme.normal,
-      colorScheme: base.buttonTheme.colorScheme.copyWith(
+      colorScheme: base.buttonTheme.colorScheme!.copyWith(
         // Why does this not work?
         onSurface: vWhite,
         onSecondary: vWhite,
@@ -27,13 +27,13 @@ ThemeData _buildVikunjaTheme(ThemeData base) {
       ),
     ),
     textTheme: base.textTheme.copyWith(
-      headline: base.textTheme.headline.copyWith(
+      headline1: base.textTheme.headline1!.copyWith(
         fontFamily: 'Quicksand',
       ),
-      title: base.textTheme.title.copyWith(
+      subtitle1: base.textTheme.headline6!.copyWith(
         fontFamily: 'Quicksand',
       ),
-      button: base.textTheme.button.copyWith(
+      button: base.textTheme.button!.copyWith(
         color:
             vWhite, // This does not work, looks like a bug in Flutter: https://github.com/flutter/flutter/issues/19623
       ),

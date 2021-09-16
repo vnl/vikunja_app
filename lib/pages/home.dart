@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
   List<Namespace> _namespaces = [];
 
-  Namespace get _currentNamespace =>
+  Namespace? get _currentNamespace =>
       _selectedDrawerIndex >= 0 && _selectedDrawerIndex < _namespaces.length
           ? _namespaces[_selectedDrawerIndex]
           : null;
@@ -38,7 +38,7 @@ class HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
         .asMap()
         .forEach((i, namespace) => namespacesList.add(new ListTile(
               leading: const Icon(Icons.folder),
-              title: new Text(namespace.title),
+              title: new Text(namespace.title!),
               selected: i == _selectedDrawerIndex,
               onTap: () => _onSelectItem(i),
             )));
@@ -61,7 +61,7 @@ class HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
         title: Text('Logout'),
         leading: Icon(Icons.exit_to_app),
         onTap: () {
-          VikunjaGlobal.of(context).logoutUser(context);
+          VikunjaGlobal.of(context)!.logoutUser(context);
         },
       ),
     ]);
@@ -69,7 +69,7 @@ class HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var currentUser = VikunjaGlobal.of(context).currentUser;
+    var currentUser = VikunjaGlobal.of(context)!.currentUser;
 
     return new Scaffold(
       appBar: AppBar(
@@ -91,9 +91,9 @@ class HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
           child: new Column(children: <Widget>[
         new UserAccountsDrawerHeader(
           accountEmail:
-              currentUser?.email == null ? null : Text(currentUser.email),
+              currentUser?.email == null ? null : Text(currentUser!.email!),
           accountName:
-              currentUser?.username == null ? null : Text(currentUser.username),
+              currentUser?.username == null ? null : Text(currentUser!.username!),
           onDetailsPressed: () {
             setState(() {
               _showUserDetails = !_showUserDetails;
@@ -155,7 +155,7 @@ class HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
   }
 
   _addNamespace(String name, BuildContext context) {
-    VikunjaGlobal.of(context)
+    VikunjaGlobal.of(context)!
         .namespaceService
         .create(Namespace(id: null, title: name))
         .then((_) {
@@ -168,7 +168,7 @@ class HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
   }
 
   Future<void> _loadNamespaces() {
-    return VikunjaGlobal.of(context).namespaceService.getAll().then((result) {
+    return VikunjaGlobal.of(context)!.namespaceService.getAll().then((result) {
       setState(() {
         _loading = false;
         _namespaces = result;

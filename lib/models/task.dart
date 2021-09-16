@@ -2,29 +2,29 @@ import 'package:vikunja_app/models/user.dart';
 import 'package:meta/meta.dart';
 
 class Task {
-  final int id;
-  final DateTime created, updated, due;
-  final List<DateTime> reminders;
-  final String title, description;
-  final bool done;
-  final User owner;
+  final int? id;
+  final DateTime? created, updated, due;
+  final List<DateTime>? reminders;
+  final String? title, description;
+  final bool? done;
+  final User? owner;
 
   Task(
-      {@required this.id,
+      {required this.id,
       this.created,
       this.updated,
       this.reminders,
       this.due,
-      @required this.title,
+      required this.title,
       this.description,
-      @required this.done,
-      @required this.owner});
+      required this.done,
+      required this.owner});
 
   Task.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         updated = DateTime.parse(json['updated']),
         created = DateTime.parse(json['created']),
-        reminders = (json['reminder_dates'] as List<dynamic>)
+        reminders = (json['reminder_dates'] as List<dynamic>?)
             ?.map((r) => DateTime.parse(r))
             ?.toList(),
         due =

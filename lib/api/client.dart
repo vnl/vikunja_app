@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 class Client {
   final JsonDecoder _decoder = new JsonDecoder();
   final JsonEncoder _encoder = new JsonEncoder();
-  final String _token;
+  final String? _token;
   final String _base;
 
   String get base => _base;
@@ -27,26 +27,26 @@ class Client {
 
   Future<dynamic> get(String url) {
     return http
-        .get('${this.base}$url', headers: _headers)
+        .get(Uri.parse('${this.base}$url'), headers: _headers)
         .then(_handleResponse);
   }
 
   Future<dynamic> delete(String url) {
     return http
-        .delete('${this.base}$url', headers: _headers)
+        .delete(Uri.parse('${this.base}$url'), headers: _headers)
         .then(_handleResponse);
   }
 
   Future<dynamic> post(String url, {dynamic body}) {
     return http
-        .post('${this.base}$url',
+        .post(Uri.parse('${this.base}$url'),
             headers: _headers, body: _encoder.convert(body))
         .then(_handleResponse);
   }
 
   Future<dynamic> put(String url, {dynamic body}) {
     return http
-        .put('${this.base}$url',
+        .put(Uri.parse('${this.base}$url'),
             headers: _headers, body: _encoder.convert(body))
         .then(_handleResponse);
   }
@@ -59,11 +59,11 @@ class Client {
         Map<String, dynamic> error = _decoder.convert(response.body);
         throw new InvalidRequestApiException(
             response.statusCode,
-            response.request.url.toString(),
+            response.request!.url.toString(),
             error["message"] ?? "Unknown Error");
       }
       throw new ApiException(
-          response.statusCode, response.request.url.toString());
+          response.statusCode, response.request!.url.toString());
     }
     return _decoder.convert(response.body);
   }

@@ -5,7 +5,7 @@ import 'package:vikunja_app/theme/button.dart';
 import 'package:vikunja_app/theme/buttonText.dart';
 
 class NamespaceEditPage extends StatefulWidget {
-  final Namespace namespace;
+  final Namespace? namespace;
 
   NamespaceEditPage({this.namespace}) : super(key: Key(namespace.toString()));
 
@@ -16,7 +16,7 @@ class NamespaceEditPage extends StatefulWidget {
 class _NamespaceEditPageState extends State<NamespaceEditPage> {
   final _formKey = GlobalKey<FormState>();
   bool _loading = false;
-  String _name, _description;
+  String? _name, _description;
 
   @override
   Widget build(BuildContext ctx) {
@@ -36,10 +36,10 @@ class _NamespaceEditPageState extends State<NamespaceEditPage> {
                     child: TextFormField(
                       maxLines: null,
                       keyboardType: TextInputType.multiline,
-                      initialValue: widget.namespace.title,
+                      initialValue: widget.namespace!.title,
                       onSaved: (name) => _name = name,
                       validator: (name) {
-                        if (name.length < 3 || name.length > 250) {
+                        if (name!.length < 3 || name.length > 250) {
                           return 'The name needs to have between 3 and 250 characters.';
                         }
                         return null;
@@ -55,10 +55,10 @@ class _NamespaceEditPageState extends State<NamespaceEditPage> {
                     child: TextFormField(
                       maxLines: null,
                       keyboardType: TextInputType.multiline,
-                      initialValue: widget.namespace.description,
+                      initialValue: widget.namespace!.description,
                       onSaved: (description) => _description = description,
                       validator: (description) {
-                        if (description.length > 1000) {
+                        if (description!.length > 1000) {
                           return 'The description can have a maximum of 1000 characters.';
                         }
                         return null;
@@ -75,8 +75,8 @@ class _NamespaceEditPageState extends State<NamespaceEditPage> {
                           child: FancyButton(
                             onPressed: !_loading
                                 ? () {
-                                    if (_formKey.currentState.validate()) {
-                                      Form.of(context).save();
+                                    if (_formKey.currentState!.validate()) {
+                                      Form.of(context)!.save();
                                       _saveNamespace(context);
                                     }
                                   }
@@ -97,12 +97,12 @@ class _NamespaceEditPageState extends State<NamespaceEditPage> {
     // FIXME: is there a way we can update the namespace without creating a new namespace object?
     //  aka updating the existing namespace we got from context (setters?)
     Namespace updatedNamespace = Namespace(
-        id: widget.namespace.id,
+        id: widget.namespace!.id,
         title: _name,
         description: _description,
-        owner: widget.namespace.owner);
+        owner: widget.namespace!.owner);
 
-    VikunjaGlobal.of(context)
+    VikunjaGlobal.of(context)!
         .namespaceService
         .update(updatedNamespace)
         .then((_) {

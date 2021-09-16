@@ -13,7 +13,7 @@ import 'package:vikunja_app/pages/list/list.dart';
 class NamespacePage extends StatefulWidget {
   final Namespace namespace;
 
-  NamespacePage({this.namespace}) : super(key: Key(namespace.id.toString()));
+  NamespacePage({required this.namespace}) : super(key: Key(namespace.id.toString()));
 
   @override
   _NamespacePageState createState() => new _NamespacePageState();
@@ -21,7 +21,7 @@ class NamespacePage extends StatefulWidget {
 
 class _NamespacePageState extends State<NamespacePage>
     with AfterLayoutMixin<NamespacePage> {
-  List<TaskList> _lists = [];
+  List<TaskList?> _lists = [];
   bool _loading = true;
 
   @override
@@ -42,10 +42,10 @@ class _NamespacePageState extends State<NamespacePage>
                       children: ListTile.divideTiles(
                           context: context,
                           tiles: _lists.map((ls) => Dismissible(
-                                key: Key(ls.id.toString()),
+                                key: Key(ls!.id.toString()),
                                 direction: DismissDirection.startToEnd,
                                 child: ListTile(
-                                  title: new Text(ls.title),
+                                  title: new Text(ls.title!),
                                   onTap: () => _openList(context, ls),
                                   trailing: Icon(Icons.arrow_right),
                                 ),
@@ -82,14 +82,14 @@ class _NamespacePageState extends State<NamespacePage>
   }
 
   Future _removeList(TaskList list) {
-    return VikunjaGlobal.of(context)
+    return VikunjaGlobal.of(context)!
         .listService
         .delete(list.id)
         .then((_) => _loadLists());
   }
 
   Future<void> _loadLists() {
-    return VikunjaGlobal.of(context)
+    return VikunjaGlobal.of(context)!
         .listService
         .getByNamespace(widget.namespace.id)
         .then((lists) => setState(() {
@@ -98,9 +98,9 @@ class _NamespacePageState extends State<NamespacePage>
             }));
   }
 
-  _openList(BuildContext context, TaskList list) {
+  _openList(BuildContext context, TaskList? list) {
     Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => ListPage(taskList: list)));
+        MaterialPageRoute(builder: (context) => ListPage(taskList: list!)));
   }
 
   _addListDialog(BuildContext context) {
@@ -114,7 +114,7 @@ class _NamespacePageState extends State<NamespacePage>
   }
 
   _addList(String name, BuildContext context) {
-    VikunjaGlobal.of(context)
+    VikunjaGlobal.of(context)!
         .listService
         .create(widget.namespace.id, TaskList(id: null, title: name, tasks: []))
         .then((_) {

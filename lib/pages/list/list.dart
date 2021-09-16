@@ -11,14 +11,14 @@ import 'package:vikunja_app/pages/list/list_edit.dart';
 class ListPage extends StatefulWidget {
   final TaskList taskList;
 
-  ListPage({this.taskList}) : super(key: Key(taskList.id.toString()));
+  ListPage({required this.taskList}) : super(key: Key(taskList.id.toString()));
 
   @override
   _ListPageState createState() => _ListPageState();
 }
 
 class _ListPageState extends State<ListPage> {
-  TaskList _list;
+  TaskList? _list;
   List<Task> _loadingTasks = [];
   bool _loading = true;
 
@@ -39,7 +39,7 @@ class _ListPageState extends State<ListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: new Text(_list.title),
+          title: new Text(_list!.title!),
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.edit),
@@ -53,7 +53,7 @@ class _ListPageState extends State<ListPage> {
         ),
         body: !this._loading
             ? RefreshIndicator(
-                child: _list.tasks.length > 0
+                child: _list!.tasks!.length > 0
                     ? ListView(
                         padding: EdgeInsets.symmetric(vertical: 8.0),
                         children: ListTile.divideTiles(
@@ -88,7 +88,7 @@ class _ListPageState extends State<ListPage> {
   }
 
   Future<void> _loadList() {
-    return VikunjaGlobal.of(context)
+    return VikunjaGlobal.of(context)!
         .listService
         .get(widget.taskList.id)
         .then((list) {
@@ -109,13 +109,13 @@ class _ListPageState extends State<ListPage> {
   }
 
   _addItem(String name, BuildContext context) {
-    var globalState = VikunjaGlobal.of(context);
+    var globalState = VikunjaGlobal.of(context)!;
     var newTask = Task(
         id: null, title: name, owner: globalState.currentUser, done: false);
     setState(() => _loadingTasks.add(newTask));
-    globalState.taskService.add(_list.id, newTask).then((task) {
+    globalState.taskService.add(_list!.id, newTask).then((task) {
       setState(() {
-        _list.tasks.add(task);
+        _list!.tasks!.add(task);
       });
     }).then((_) {
       _loadList();
@@ -123,6 +123,6 @@ class _ListPageState extends State<ListPage> {
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text('The task was added successfully!'),
       ));
-    });
+    } as FutureOr<_> Function(Null));
   }
 }

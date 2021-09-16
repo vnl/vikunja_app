@@ -13,7 +13,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  String _server, _username, _password;
+  String? _server, _username, _password;
   bool _loading = false;
 
   @override
@@ -79,8 +79,8 @@ class _LoginPageState extends State<LoginPage> {
                         builder: (context) => FancyButton(
                               onPressed: !_loading
                                   ? () {
-                                      if (_formKey.currentState.validate()) {
-                                        Form.of(context).save();
+                                      if (_formKey.currentState!.validate()) {
+                                        Form.of(context)!.save();
                                         _loginUser(context);
                                       }
                                     }
@@ -110,10 +110,10 @@ class _LoginPageState extends State<LoginPage> {
   _loginUser(BuildContext context) async {
     setState(() => _loading = true);
     try {
-      var vGlobal = VikunjaGlobal.of(context);
+      var vGlobal = VikunjaGlobal.of(context)!;
       var newUser =
           await vGlobal.newUserService(_server).login(_username, _password);
-      vGlobal.changeUser(newUser.user, token: newUser.token, base: _server);
+      vGlobal.changeUser(newUser.user!, token: newUser.token, base: _server);
     } catch (ex) {
       showDialog(
           context: context,
